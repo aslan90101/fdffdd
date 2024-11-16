@@ -20,6 +20,32 @@ local corner = Instance.new("UICorner")
 corner.CornerRadius = UDim.new(0, 15)
 corner.Parent = frame
 
+-- Перемещение GUI
+local dragging = false
+local dragStart = nil
+local startPos = nil
+
+frame.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = true
+        dragStart = input.Position
+        startPos = frame.Position
+    end
+end)
+
+frame.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = false
+    end
+end)
+
+frame.InputChanged:Connect(function(input)
+    if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+        local delta = input.Position - dragStart
+        frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+    end
+end)
+
 -- Функция для создания чекбокса
 local function createCheckbox(labelText, position, toggleFunction)
     local checkboxFrame = Instance.new("Frame")
@@ -77,7 +103,7 @@ local function toggleHighJump(enabled)
     if enabled then
         humanoid.JumpPower = 100 -- Увеличьте JumpPower для высокого прыжка
     else
-        humanoid.JumpPower = 23 -- Верните к стандартному значению
+        humanoid.JumpPower = 22 -- Верните к стандартному значению
     end
 end
 
@@ -85,4 +111,5 @@ end
 createCheckbox("хуйня не рабочая", UDim2.new(0, 25, 0, 25), toggleInfiniteJump)
 createCheckbox("Телепорт на спавн", UDim2.new(0, 25, 0, 80), toggleTeleport)
 createCheckbox("Высокий прыжок", UDim2.new(0, 25, 0, 135), toggleHighJump)
+
 
